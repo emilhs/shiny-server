@@ -1,7 +1,4 @@
 # define required functions for power and ss calcs
-library(epiR)
-library(pwr)
-library(powerSurvEpi)
 
 # (FOR RCT)
 prop_p <- function(myn, b, a, prop1, prop2){

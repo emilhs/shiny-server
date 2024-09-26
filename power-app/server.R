@@ -1,5 +1,3 @@
-source('funs.R')
-
 my_server <- function(input, output, session) {
   
   # hide events (based on calculation type)
