@@ -1,3 +1,12 @@
+library(shiny)
+library(rsconnect)
+library(shinyWidgets)
+library(shinyjs)
+library(bslib)
+library(epiR)
+library(pwr)
+library(powerSurvEpi)
+
 # define required functions for power and ss calcs
 
 # (FOR RCT)
