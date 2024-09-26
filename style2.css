@@ -1,0 +1,148 @@
+/* default body settings */
+body{font-size: 12px; padding: 8px; padding-top: 8px; min-width: 360px; 
+  background-color: white;
+}
+
+/* row and column settings */
+div.row{--bs-gutter-x: 0px;}
+.col-6.form-control{
+  padding:0px;
+  margin:0px;
+}
+.bslib-gap-spacing{gap: 0px}
+
+/* text styling settings (all) */
+.text-center{text-align: center;}
+.danger {color: darkred;}
+.bold {font-weight: bold;}
+.bottomtext h5{font-size: 12px; margin-left: 20%; margin-right: 20%;}
+a, a:link, a:active, a:visited, a:hover {
+  color:inherit;
+}
+
+/* text styling settings (UI elements) */
+.title h3{padding: 15px; font-size: 18px; font-weight: bold;}
+.preamble h5{font-size: 13px; font-weight: normal;}
+.indesc, #currentHR{display: inline; margin: 0px; padding: 0px;}
+.desc, .control-label, .formula, .footnote, .preamble, .tabletitle{margin: 3px; margin-top: 0px;}
+.tabletitle{margin-left: 20%; margin-right: 20%;}
+.desc, .tabletitle{padding-top: 10px; padding-bottom: 10px;}
+.control-label{padding-top: 5px;}
+.footnote{padding-top: 10px; font-size: 9px;}
+.footer{text-align: center; font-size: 10px; margin-bottom: 5px; margin-top: 20px; margin-left:auto; margin-right:auto;}
+.footerlink{display: block; text-align: center; font-size: 10px; margin-bottom: 15px; margin-left:auto; margin-right:auto;}
+.formula{font-size: 12px; text-align:center; font-family:'Courier New', monospace; letter-spacing: -0.05em;}
+.small{padding-left: 5px; padding-right: 5px; margin-left: 12px; margin-right:12px;}
+.form-group{margin-bottom: 3px;}
+.btext{text-wrap: nowrap; margin-left: auto; margin-right: auto;}
+
+/* card settings */
+.card {
+  background: rgba(247, 250, 252, 1);
+  box-shadow: 0 4px 20px rgba(71, 71, 71, 0.0);
+  -webkit-backdrop-filter: blur(4.8px);
+  border: 1px solid rgba(122, 136, 157, 1.0);
+}
+
+.card-body{padding-left:15px; padding-right: 15px; padding-bottom: 15px; padding-top:10px;}
+.card-header{padding-top:15px; padding-left: 15px; padding-right: 15px; padding-bottom: 15px;}
+.card-header-tabs, .btn-group-container-sw{display: flex; vertical-align: middle;}
+.card, .btn{
+  width: 90%; margin-left: auto; margin-right: auto; 
+  border-radius: 12px; 
+  margin-bottom: 20px;
+}
+.bslib-card .card-header, .btn-group-container-sw{line-height: 1.25; border: 0px;}
+
+/* button settings */
+.form-control, .input-group-text, .btn{
+  background: rgba(255, 255, 255, 1.0);
+  box-shadow: 0 4px 10px rgba(0, 22, 66, 0.0);
+  border: rgba(0, 35, 65, 1.0);
+}
+/* DEFAULT BUTTON, DEFAULT MIN/MAX */
+.btn, .irs.irs--shiny .irs-min, .irs.irs--shiny .irs-max {
+    font-size: 11px; font-weight: 400;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 1.0);
+    box-shadow: 0 4px 10px rgba(0, 22, 66, 0.0);
+    border: 1px solid rgba(0, 35, 65, 1.0);
+}
+.nav-item, .btn{flex: 1; margin: 3px; text-align: center;}
+/* BUTTON HOVER */
+.form-control:focus, .irs.irs--shiny .irs-single, .nav-tabs .nav-link.active, .nav-tabs .nav-link:hover, .btn-check:checked+.btn, .btn-group-container-sw .btn:hover {
+    border-radius: 3px;
+    background-color: rgba(24, 27, 31, 0.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.0);
+    border: 1px solid rgba(122, 136, 157, 1.0);
+  }
+/* BUTTON SELECTED */
+.btn-check:checked+.btn, .nav-tabs .nav-link.active{
+  color: white;
+  border-radius: 3px;
+  background-color:  #2b6cb0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0);
+  border: 1px solid rgba(0,35,65,1.0);
+}
+
+/* NAV SETTINGS */
+.nav-tabs .nav-link, .form-control, .input-group-text{
+  border: 0px; 
+  border-radius: 0px; 
+  font-size: 11px; 
+  font-weight: 400;
+}
+.nav-tabs{
+  padding: 0px; 
+  width: 100%; 
+  margin-left: revert;
+}
+
+
+/* INPUT GROUPS (W AND WO ICON) */
+.shiny-input-container:not(.shiny-input-container-inline) {padding: 3px; width: 100%;}
+/* INPUT GROUP */
+.input-group-text{
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-top:1px solid rgba(0, 35, 65, 1.0);
+    border-left: 1px solid rgba(0, 35, 65, 1.0);
+    border-bottom: 1px solid rgba(0, 35, 65, 1.0);
+}
+.form-control {
+    border: 1px solid rgba(0,35,65,1.0);
+    border-radius: 3px;
+}
+.input-group-text{
+  background: rgba(255, 255, 255, 1.0);
+  border-right: 1px solid rgba(0, 35, 65, 1.0);
+  border-top: 1px solid rgba(0, 35, 65, 1.0);
+  border-bottom: 1px solid rgba(0, 35, 65, 1.0);
+}
+
+/* SLIDER AND BAR*/
+.irs.irs--shiny .irs-single {
+  border-radius: 0px;
+  font-size: 10px; 
+  font-weight: 600;
+}
+.irs.irs--shiny .irs-bar, .irs.irs--shiny .irs-single, .irs.irs--shiny .irs-handle.single, .irs.irs--shiny .irs-handle{
+    color: white;
+    font-weight: 400;
+    background-color:  #2b6cb0;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.0);
+    border: 1px solid rgba(0,35,65,1.0);
+}
+.irs.irs--shiny .irs-min, .irs.irs--shiny .irs-max, .input-group-text {
+  border-radius: 3px;
+}
+
+/* adjust content for small screens */
+@media (max-width: 800px) {
+  .card-header-tabs, .btn-group-container-sw {flex-direction: column;}
+  .nav-item, .btn{margin: 3px;}
+  .btn{width: 100%; margin-left:auto; margin-right:auto;}
+}
+
+
+
