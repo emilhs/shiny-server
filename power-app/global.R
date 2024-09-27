@@ -1,11 +1,12 @@
 library(shiny)
 #library(rsconnect)
+
 library(shinyWidgets)
 library(shinyjs)
 library(bslib)
 library(epiR)
 library(pwr)
-library(powerSurvEpi)
+#library(powerSurvEpi)
 
 # define required functions for power and ss calcs
 
@@ -68,8 +69,8 @@ pair_n <- function(myn, b, a, mean, sd) {
 }
 
 # (FOR TTE W/ PILOT)
-pilot_p <- function(data, ne, nc, rr, a, b, k) powerCT(Surv(t,s)~i, data, nE = ne, nC = nc, RR = rr, alpha = a)$power
-pilot_n <- function(data, ne, nc, rr, a, b, k) ssizeCT(Surv(t,s)~i, data, k = k, RR = rr, alpha = a, power = b)$ssize
+# pilot_p <- function(data, ne, nc, rr, a, b, k) powerCT(Surv(t,s)~i, data, nE = ne, nC = nc, RR = rr, alpha = a)$power
+# pilot_n <- function(data, ne, nc, rr, a, b, k) ssizeCT(Surv(t,s)~i, data, k = k, RR = rr, alpha = a, power = b)$ssize
 
 # (FOR TTE W/PREVALENCE)
 default_p <- function(ne, nc, pe, pc, rr, a, b, k) {

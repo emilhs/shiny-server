@@ -222,6 +222,7 @@ my_server <- function(input, output, session) {
                                     is required to sufficiently detect a change of <b>",m,"</b> in the means of experimental
                                     and control groups that share a standard deviation of <b>",sd,"</b>, assuming <b>",b*100,"%</b>
                                     power and a two-sided significance level of <b>",a,"</b>.</p>
+                                    
                                     <p>This estimate for sample size is obtained using the two-sample t-test.</p>
                         </div>")))
               }
@@ -235,6 +236,7 @@ my_server <- function(input, output, session) {
                             is required to sufficiently detect a change of <b>",m,"</b> in the means of experimental
                             and control groups that share a standard deviation of <b>",sd,"</b>, assuming <b>",b*100,"%</b>
                             power and a two-sided significance level of <b>",a,"</b>.</p>
+                            
                             <p>This estimate for sample size from unequal samples is obtained using the method described in Cohen, 1988.</p>
                         </div>")))
               }
@@ -253,6 +255,7 @@ my_server <- function(input, output, session) {
                                     control groups of <b>", myn, "</b>, with a standard deviation of <b>",sd,"</b> to sufficiently detect a 
                                     change of <b>", m, "</b> with a two-sided significance level of <b>",a,"</b>.
                                     </p>
+                                    
                                     <p>This estimate for power is obtained using the two-sample t-test.</p>
                                     </div>")))
               }
@@ -264,6 +267,7 @@ my_server <- function(input, output, session) {
                           control groups of <b>", myn, "</b>, with a standard deviation of <b>",sd,"</b> to sufficiently detect a 
                           change of <b>", m, "</b> with a two-sided significance level of <b>",a,"</b>.
                           </p>
+                          
                           <p>This estimate for power from unequal samples is obtained using the method described in Cohen, 1988.</p>
                         </div>")))
               }
@@ -303,13 +307,12 @@ my_server <- function(input, output, session) {
                   return(HTML(paste0("<div class = preamble>
                                   <p>Approximately <b>",events,"</b> events must be observed to sufficiently detect a hazard ratio of <b>", round(RR,1),
                                      "</b> with <b>",p*100,"%</b> power and a two-sided significance level of <b>",a,
-                                     "</b>.
-                                  </p>
-                                  <p>This can be obtained from an experimental group of <b>",nE,"</b> and a control group of <b>", nC, "</b>, assuming a
+                                     "</b>. This can be obtained from an experimental group of <b>",nE,"</b> and a control group of <b>", nC, "</b>, assuming a
                                         ratio of <b>",round(k,1), "</b> of experimental : control populations and a <b>",pe,"%</b> event occurrence rate in the experimental group 
-                                        and a <b>",pc,"%</b> event occurrence rate in the control group. This estimate for sample size is obtained using the method for sample size calculation
-                                        described in Schoenfeld, 1983.
+                                        and a <b>",pc,"%</b> event occurrence rate in the control group. 
                                   </p>
+                                        <p>This estimate for sample size is obtained using the method for sample size calculation
+                                        described in Schoenfeld, 1983.</p>
                                   </div>")))
                 }
                 else return (inputinvalid)
@@ -325,7 +328,9 @@ my_server <- function(input, output, session) {
                                   sufficiently detect a hazard ratio of <b>", round(RR,1), "</b> (a <b>",pe,"%</b> event occurrence rate in the 
                                   experimental group and a <b>",pc,"%</b> event occurrence rate in the control group) 
                                   with a two-sided significance level of <b>",a,"</b>.
-                                  This estimate for power is obtained by reversing the method for sample size calculation
+                                  </p>
+                                  
+                                  <p>This estimate for power is obtained by reversing the method for sample size calculation
                                   described in Schoenfeld, 1983.
                                   </p>
                                   </div>")))}
