@@ -5,7 +5,7 @@ my_ui <- page(
      # initialize shinyjs
      useShinyjs(),
      tags$head(
-          tags$link(rel = "icon", type = "image/png", href = "powercalclogo.png"),
+          tags$link(rel = "icon", type = "image/png", href = "powercalclogo.drawio.png"),
           tags$link(rel = "stylesheet", type = "text/css", href = "style2.css"),
           tags$title("powercalc.ca")
      ),
