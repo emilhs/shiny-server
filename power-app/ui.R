@@ -33,7 +33,7 @@ my_ui <- page(
               p(class = "small text-center", "Common/Recommended Value is 0.05")
           ),
           div(class = "forss",
-              HTML("<p class = 'desc'><b>Statistical power</b> or &beta;-value</b> (beta):</p>"),
+              HTML("<p class = 'desc'><b>Statistical power</b> or 1-&beta; value</b> (1-''beta''):</p>"),
               sliderInput("beta", NULL, min = 0.5, max = 0.99, value = 0.8),
               p(class = "small text-center", "Common/Recommended Value is 0.8") 
           ),
