@@ -1,9 +1,13 @@
 # Define UI
 my_ui <- page(
+    #title = "powercalc.ca",
+    #use_shiny_title(),
      # initialize shinyjs
      useShinyjs(),
      tags$head(
-          tags$link(rel = "stylesheet", type = "text/css", href = "style2.css")
+          tags$link(rel = "icon", type = "image/png", href = "powercalclogo.png"),
+          tags$link(rel = "stylesheet", type = "text/css", href = "style2.css"),
+          tags$title("powercalc.ca")
      ),
      div(id = "page",
       # SETUP DATA/CALCTYPE
