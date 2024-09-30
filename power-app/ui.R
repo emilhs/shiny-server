@@ -42,6 +42,14 @@ my_ui <- page(
       # FOOTER OF PAGE
       div(class = "bottomtext text-center", h5("This web app can quickly compute sample sizes and power values for data that is often enountered in epidemiological research scenarios without using R.")),
       p(class = "footer", "Fralick Lab 2024"),
-      a(class = "footerlink", href = "https://forms.gle/hYH9qJZm8srXuab68", "Provide Feedback")
+      a(class = "footerlink", href = "https://forms.gle/hYH9qJZm8srXuab68", "Provide Feedback"),
+      HTML("<script async src='https://www.googletagmanager.com/gtag/js?id=G-EK8VZNR4QT'></script>
+             <script>
+             window.dataLayer = window.dataLayer || [];
+           function gtag(){dataLayer.push(arguments);}
+           gtag('js', new Date());
+           
+           gtag('config', 'G-EK8VZNR4QT');
+           </script>")
   )
 )
