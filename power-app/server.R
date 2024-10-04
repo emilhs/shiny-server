@@ -139,7 +139,8 @@ my_server <- function(input, output, session) {
                     )
                   )),
                   div(class = 'desc',
-                    HTML("<p class = 'indesc'><b>Standard deviation</b> of <b>experimental <u>and</u> control</b> groups<sup>2</sup>:</p>"),
+                    #HTML("<p class = 'indesc'><b>Standard deviation</b> of outcome<b>experimental <u>and</u> control</b> groups<sup>2</sup>:</p>"),
+                    HTML("<p class = 'indesc'><b>Standard deviation</b> of outcome in population<sup>1</sup>:</p>"),
                     htmlOutput("restrictCD")
                   ),
                   numericInput(inputId = "sdChange", NULL, value = 4.3, step = 0.1))
@@ -234,15 +235,38 @@ my_server <- function(input, output, session) {
               tryCatch({
                 if (calctype == calcs[1]){
                   p <- input$beta
-                  nsize <- epi.ssninfb(treat = trt/100, control = ctrl/100, delta = myd, n = NA, alpha = a, power = p)
+                  nsize <- epi.ssninfb(treat = trt/100, control = ctrl/100, delta = myd/100, n = NA, alpha = a, power = p)
                   nsize <- c(nsize$n.treat, nsize$n.control)
-                  return(paste0(nsize[1]," ",nsize[2]))
+                  
+                  return(HTML(paste0(
+                    "<div class = preamble>
+                      <p>A total sample of <b>", 2*ceiling(nsize[1]), "</b>, with an experimental group of at least <b>",ceiling(nsize[1]),"</b> 
+                                    and a control group of at least <b>", ceiling(nsize[1]), "</b>
+                                    is required to sufficiently detect that a <b>",trt,"%</b> rate of occurrence of the outcome in the experimental group is
+                                    <i>not inferior</i> to a <b>",ctrl,"%</b> rate of occurrence of the outcome in the control group, 
+                                    assuming a non-inferioirty margin of <b>",myd,"</b>, a <b>",p*100,"%</b>
+                                    power and a two-sided significance level of <b>",a,"</b>.</p>
+                                    
+                                    <p>This estimate for sample size is obtained using the method described in Blackwelder, 1982.</p>
+                                    
+                                    <p>1. Blackwelder WC (1982). Proving the null hypothesis in clinical trials. Controlled Clinical Trials 3: 345 - 353.</p>
+                  </div>")))
                 }
                 else if (calctype == calcs[2]){
                   myn <- input$myNo
-                  power <- epi.ssninfb(treat = trt/100, control = ctrl/100, delta = myd, n = myn, alpha = a, power = NA)$power
-                  return(power)
-                }
+                  power <- epi.ssninfb(treat = trt/100, control = ctrl/100, delta = myd/100, n = myn, alpha = a, power = NA)$power
+                  return(HTML(paste0(
+                    "<div class = preamble>
+                      <p>A power value of <b>", round(power,5), "</b> is obtained for a randomized control trial with equally-sized experimental and 
+                                    control groups of <b>", myn, "</b> to sufficiently detect that a <b>",trt,"%</b> rate of occurrence of the outcome in the experimental group is
+                                    <i>not inferior</i> to a <b>",ctrl,"%</b> rate of occurrence of the outcome in the control group, 
+                                    assuming a non-inferioirty margin of <b>",myd,"</b> and a two-sided significance level of <b>",a,"</b>.</p>
+                                    
+                                    <p>This estimate for sample size is obtained using the method described in Blackwelder, 1982.</p>
+                                    
+                                    <p>1. Blackwelder WC (1982). Proving the null hypothesis in clinical trials. Controlled Clinical Trials 3: 345 - 353.</p>
+                  </div>")))                
+                  }
               },
               warning = function(cond){return(inputinvalid)},
               error = function(cond){return(inputinvalid)})
@@ -283,20 +307,7 @@ my_server <- function(input, output, session) {
                                     <p>This estimate for sample size is obtained using the two-sample t-test.</p>
                         </div>")))
                   }
-                  else {
-                    k <- round(eVal/cVal, 1)
-                    ncase <- pair_n(c(eVal, cVal), b, a, m, sd)
-                    return(HTML(paste0(
-                      "<div class = preamble>
-                            <p>A total sample of <b>", ceiling(ncase[1]) + ceiling(ncase[2]),"</b>, with an experimental group of at least <b>",ceiling(ncase[1]),"</b> 
-                            and a control group of at least <b>", ceiling(ncase[2]), "</b>
-                            is required to sufficiently detect a change of <b>",m,"</b> in the means of experimental
-                            and control groups that share a standard deviation of <b>",sd,"</b>, assuming <b>",b*100,"%</b>
-                            power and a two-sided significance level of <b>",a,"</b>.</p>
-                            
-                            <p>This estimate for sample size from unequal samples is obtained using the method described in Cohen, 1988.</p>
-                        </div>")))
-                  }
+                  else return (inputinvalid)
                 }
                 else return (inputinvalid)
               }
@@ -316,18 +327,7 @@ my_server <- function(input, output, session) {
                                     <p>This estimate for power is obtained using the two-sample t-test.</p>
                                     </div>")))
                   }
-                  else{
-                    pval <- pair_p(c(eVal, cVal), NA, a, m, sd)
-                    return(HTML(paste0(
-                      "<div class = preamble>
-                          <p>A power value of <b>",round(pval, 5),"</b> is obtained for an experiment with equally-sized experimental and 
-                          control groups of <b>", myn, "</b>, with a standard deviation of <b>",sd,"</b> to sufficiently detect a 
-                          change of <b>", m, "</b> with a two-sided significance level of <b>",a,"</b>.
-                          </p>
-                          
-                          <p>This estimate for power from unequal samples is obtained using the method described in Cohen, 1988.</p>
-                        </div>")))
-                  }
+                  else return(inputinvalid)
                 }
                 else return(inputinvalid)
               }
@@ -338,18 +338,53 @@ my_server <- function(input, output, session) {
         }
         else if (nonInf == "ninf"){
           delta <- input$delta
-          if (calctype == calcs[1]){
-            b <- input$beta
-          }
-          else if (calctype == calcs[2]){
-            myn <- input$myNo
-            eVal <- input$eVal
-            cVal <- input$cVal
-            
-            #power <- epi.ssninfb(treat = eVal, control = cVal, n = myn, alpha = a, delta = delta, power = NA)$power
-            return(power)
-          }
-          return(inputnotyet)
+          tryCatch({
+            if (calctype == calcs[1]){
+              b <- input$beta
+              if (m != 0 & sd != 0){
+                nsize <- epi.ssninfc(treat = mE, control = mC, sigma = sd, n = NA, alpha = a, delta = delta/100, power = b)
+                nsize <- c(nsize$n.treat, nsize$n.control)
+                return(HTML(paste0(
+                  "<div class = preamble>
+                      <p>A total sample of <b>", 2*ceiling(nsize[1]), "</b>, with an experimental group of at least <b>",ceiling(nsize[1]),"</b> 
+                                    and a control group of at least <b>", ceiling(nsize[1]), "</b>
+                                    is required to sufficiently detect that a mean value of <b>",mE,"</b> in the experimental group is
+                                    <i>not inferior</i> to a mean value of <b>",mC,"</b>in the control group, for a population with
+                                    a standard deviation of <b>",sd,"</b>, assuming a non-inferioirty margin of <b>",delta,"</b>, <b>",b*100,"%</b>
+                                    power and a two-sided significance level of <b>",a,"</b>.</p>
+                                    
+                                    <p>This estimate for sample size is obtained using the method described in Blackwelder, 1982.</p>
+                                    
+                                    <p>1. Blackwelder WC (1982). Proving the null hypothesis in clinical trials. Controlled Clinical Trials 3: 345 - 353.</p>
+                  </div>")))
+              }
+              else return (inputinvalid)
+            }
+            else if (calctype == calcs[2]){
+              myn <- input$myNo
+              eVal <- input$eVal
+              cVal <- input$cVal
+              if (m != 0 & eVal > 0 & cVal > 0 & sd != 0 & eVal == cVal){
+                power <- epi.ssninfc(treat = mE, control = mC, sigma = sd, n = myn, alpha = a, delta = delta/100, power = NA)$power
+                
+                return(HTML(paste0("<div class = preamble>
+                                    <p>A power value of <b>",round(power, 5),"</b> is obtained for an experiment with equally-sized experimental and 
+                                    control groups of <b>", myn, "</b> to sufficiently detect that a mean value of <b>",mE,"</b> in the experimental group is
+                                    <i>not inferior</i> to a mean value of <b>",mC,"</b>in the control group, for a population with
+                                    a standard deviation of <b>",sd,"</b>, assuming a non-inferioirty margin of <b>",delta,"</b> and a 
+                                    two-sided significance level of <b>",a,"</b>.</p>
+                                    
+                                    <p>This estimate for sample size is obtained using the method described in Blackwelder, 1982.</p>
+                                    
+                                    <p>1. Blackwelder WC (1982). Proving the null hypothesis in clinical trials. Controlled Clinical Trials 3: 345 - 353.</p>
+                                    </div>")))
+                }
+              else return (inputinvalid)
+            }
+            return(inputnotyet)
+          },
+          warning = function(cond){return(inputinvalid)},
+          error = function(cond){return(inputinvalid)})
         }
       }
     }

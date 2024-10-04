@@ -25,8 +25,6 @@ prop_n <- function(myn, b, a, prop1, prop2){
 }
 
 # FOR RCT NINF
-c_ninf_p <- function()
-
 
 # (FOR PAIRED DATA)
 pair_p <- function(myn, b, a, mean, sd) {
