@@ -13,6 +13,7 @@ div.row{--bs-gutter-x: 0px;}
 
 /* text styling settings (all) */
 .text-center{text-align: center;}
+.text-right{text-align: right;}
 .danger {color: darkred;}
 .bold {font-weight: bold;}
 .bottomtext h5{font-size: 12px; margin-left: 20%; margin-right: 20%;}
@@ -130,11 +131,37 @@ a, a:link, a:active, a:visited, a:hover {
     color: white;
     font-weight: 400;
     background-color:  #2b6cb0;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.0);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.0);
     border: 1px solid rgba(0,35,65,1.0);
 }
 .irs.irs--shiny .irs-min, .irs.irs--shiny .irs-max, .input-group-text, .irs.irs--shiny .irs-single {
     border-radius: 3px;
+}
+
+/* help button */
+#NIhelp{
+  color: white;
+  background-color:  #2b6cb0;
+  border: 1px solid rgba(0,35,65,1.0);
+  margin-top:auto;
+  margin-bottom:auto;
+  padding: 0px;
+  line-height: 0.125;
+  width: 18px;
+  height: 18px;
+}
+
+#NIhelp:hover{
+  color: rgba(76, 77, 79, 1.0);
+  background-color: rgba(24, 27, 31, 0.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.0);
+  border: 1px solid rgba(122, 136, 157, 1.0);
+  font-weight: 200;
+}
+
+.fas{
+  font-weight: 600;
+  font-size: 0.75rem;
 }
 
 /* adjust content for small screens */

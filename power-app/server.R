@@ -1,5 +1,11 @@
 my_server <- function(input, output, session) {
   
+  # get help for non-inferiority
+  runjs("document.getElementById('NIhelp').onclick = function() { 
+           window.open('https://www.youtube.com/watch?v=ZexRMe2xbJw', '_blank');
+         };"
+  )
+  
   # hide events (based on calculation type)
   observeEvent(input$type1, {
     if (!is.null(input$type1)){
@@ -81,7 +87,7 @@ my_server <- function(input, output, session) {
     # Applicable for All
     selectors <- div(class = "newclass",
                   div(class = 'desc',
-                    HTML("<p class = 'indesc'><b>Anticipated %</b> of the <b>experimental <u>and</u> control</b> groups who will experience the outcome<sup>2</sup>:</p>"),
+                    HTML("<p class = 'indesc'><b>Anticipated %</b> of the <b>experimental <u>and</u> control</b> groups who will experience the outcome<sup>1</sup>:</p>"),
                     htmlOutput("restrictB")
                   ),
                   div(class = "row",
@@ -107,7 +113,7 @@ my_server <- function(input, output, session) {
     # Applicable for All
     selectors <- div(class = "newclass",
                   div(class = 'desc',
-                    HTML("<p class = 'indesc'><b>Anticipated value</b> of outcome in the <b>experimental <u>and</u> control</b> groups<sup>2</sup>:</p>"),
+                    HTML("<p class = 'indesc'><b>Anticipated value</b> of outcome in the <b>experimental <u>and</u> control</b> groups<sup>1</sup>:</p>"),
                     htmlOutput("restrictC")
                   ),
                   div(class = "row",
@@ -146,7 +152,7 @@ my_server <- function(input, output, session) {
     selectors <- div(class = "newclass",
                     div(class = 'desc',
                     HTML(paste0("<p class = 'indesc'><b>Anticipated %</b> of the <b>experimental <u>and</u> control</b> groups who 
-                             will experience the outcome over the maximum time period of the study ",htmlOutput("currentHR"),"<sup>2</sup>:</p>"))
+                             will experience the outcome over the maximum time period of the study ",htmlOutput("currentHR"),"<sup>1</sup>:</p>"))
                     ),
                     div(class = "row",
                       div(class = "col-6",
@@ -178,10 +184,10 @@ my_server <- function(input, output, session) {
     
     # BINARY DATA
     if (datacat == datas[1]){
-      if (!is.null(input$type3)){
-        studycat <- input$type3
-        # FOR RANDOMIZED TRIAL
-        if (studycat == binarys[1]){
+      # if (!is.null(input$type3)){
+      #  studycat <- input$type3
+      #  # FOR RANDOMIZED TRIAL
+      # if (studycat == binarys[1]){
           a <- input$alpha
           ctrl <- input$rrControl
           trt <- input$rrTreatment
@@ -242,8 +248,8 @@ my_server <- function(input, output, session) {
               error = function(cond){return(inputinvalid)})
             }
           }
-        }
-      }
+      #  }
+      # }
     }
     # CONTINUOUS DATA
     else if (datacat == datas[2]){
@@ -349,8 +355,8 @@ my_server <- function(input, output, session) {
     }
     # TIME-TO-EVENT DATA
     else if (datacat == datas[3]){
-      if (!is.null(input$type3)){
-        subdatacat <- input$type3
+      # if (!is.null(input$type3)){
+      #  subdatacat <- input$type3
         # W/ PILOT DATASET
         #if (subdatacat == ttes[1]){
           # make "dat"
@@ -409,7 +415,7 @@ my_server <- function(input, output, session) {
             error = function(cond){return(inputinvalid)}
           )
         #}
-      }
+      #}
     }
     
   })

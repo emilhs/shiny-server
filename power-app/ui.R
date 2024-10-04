@@ -14,16 +14,32 @@ my_ui <- page(
       # SETUP DATA/CALCTYPE
       div(class = "title text-center", h3("Power and Sample Size Calculator")),
       card(id = "selector",
-           #card_header(class = "subtitle", "Describe your available data and objective below:"),
-           radioGroupButtons("type1", "Calculate:", choices = calcs, status = "black", individual = TRUE),
-           radioGroupButtons("type2", "For a primary outcome that is:", choiceValues = datas, choiceNames = c(binarybig, ctsbig, ttebig), status = "black", individual = TRUE),
-           div(id = 'Bsub',
-              radioGroupButtons("type3", "For study type:", choiceValues = binarys, choiceNames = bexps, status = "black", individual = TRUE),
-           ),
+           p(class = "desc", "Calculate:"),
+           radioGroupButtons("type1", NULL, choices = calcs, status = "black", individual = TRUE),
+           p(class = "desc", "For a primary outcome that is:"),
+           radioGroupButtons("type2", NULL, choiceValues = datas, choiceNames = c(binarybig, ctsbig, ttebig), status = "black", individual = TRUE),
+           # div(id = 'Bsub',
+           #    radioGroupButtons("type3", "For study type:", choiceValues = binarys, choiceNames = bexps, status = "black", individual = TRUE),
+           # ),
            div(id = "BCsub",
-              radioGroupButtons("type4", "For trial type:", choiceValues = supinf, choiceNames = c(supbig, infbig), status = "black", individual = TRUE),
+              div(class = "desc", 
+                 div(class = "row",
+                   div(class = "col-6",
+                       p("For trial type:")
+                    ),
+                   div(class = "text-right col-6",
+                       circleButton(
+                         inputId = "NIhelp",
+                         icon = icon("question"),
+                         href = "https://www.youtube.com/watch?si=F5V5vOejmy-i5NV3&v=ZexRMe2xbJw&feature=youtu.be",
+                         status = "primary"
+                       )
+                   )
+                 )
+              ),
+              radioGroupButtons("type4", NULL, choiceValues = supinf, choiceNames = c(supbig, infbig), status = "black", individual = TRUE),
            ),
-           p(class = "footnote", "For individual-level Randomized Control Trials (RCTs), not clustered RCTs.")
+           p(class = "footnote", "Note: This tool is for individual-level Randomized Control Trials (RCTs), not clustered RCTs.")
       ),
       # DATA ENTRY
       card(id = "data", 
@@ -32,8 +48,8 @@ my_ui <- page(
           div(id = "C-op", uiOutput("selectC")), 
           div(id = "T-op", uiOutput("selectT")),
           div(id = "marginA",            
-              HTML("<p class = 'desc'><b>Non-inferiority margin</b> or &Delta;-value (delta):</p>"),
-              sliderInput("delta", NULL, min = 0.01, max = 0.2, value = 0.1)
+              HTML("<p class = 'desc'><b>Non-inferiority margin</b>:</p>"),
+              sliderInput("delta", NULL, min = 1, max = 20, step = 0.25, value = 10, post = '%')
           ),
           div(id = "sig",            
               HTML("<p class = 'desc'><b>Significance level</b> or &alpha;-value (alpha):</p>"),
@@ -45,7 +61,7 @@ my_ui <- page(
               sliderInput("beta", NULL, min = 0.5, max = 0.99, value = 0.8),
               p(class = "small text-center", "Common/Recommended Value is 0.8") 
           ),
-          p(class = "footnote", "2. Based on available data and literature from other cohort studies or Randomized Control Trials (RCTs).")
+          p(class = "footnote", "1. Based on available data and literature from other cohort studies or Randomized Control Trials (RCTs).")
         )
       ),
       # RESULTS
