@@ -133,8 +133,8 @@ a, a:link, a:active, a:visited, a:hover {
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.0);
     border: 1px solid rgba(0,35,65,1.0);
 }
-.irs.irs--shiny .irs-min, .irs.irs--shiny .irs-max, .input-group-text {
-  border-radius: 3px;
+.irs.irs--shiny .irs-min, .irs.irs--shiny .irs-max, .input-group-text, .irs.irs--shiny .irs-single {
+    border-radius: 3px;
 }
 
 /* adjust content for small screens */

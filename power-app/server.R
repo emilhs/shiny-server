@@ -25,31 +25,57 @@ my_server <- function(input, output, session) {
       datacat = input$type2
       if (datacat == datas[1]){
         shinyjs::show(id = "B-op")
+        shinyjs::show(id = "BCsub")
         shinyjs::show(id = "Bsub")
         shinyjs::hide(id = "C-op")
         shinyjs::hide(id = "T-op")
       }
       else if (datacat == datas[2]){
         shinyjs::hide(id = "B-op")
+        shinyjs::show(id = "BCsub")
         shinyjs::hide(id = "Bsub")
         shinyjs::show(id = "C-op")
         shinyjs::hide(id = "T-op")
       }
       else if (datacat == datas[3]){
         shinyjs::hide(id = "B-op")
+        shinyjs::hide(id = "BCsub")
         shinyjs::hide(id = "Bsub")
         shinyjs::hide(id = "C-op")
         shinyjs::show(id = "T-op")
+        shinyjs::hide(id = "marginA")
       }
     }
     else {
       shinyjs::hide(id = "B-op")
+      shinyjs::hide(id = "BCsub")
       shinyjs::hide(id = "Bsub")
       shinyjs::hide(id = "C-op")
       shinyjs::hide(id = "T-op")
+      shinyjs::hide(id = "marginA")
     }
   }, ignoreInit = F)
 
+  observeEvent(input$type4, {
+    if (!is.null(input$type2)){
+      datacat = input$type2
+      if (datacat == datas[1] || datacat == datas[2]){
+      if (!is.null(input$type4)){
+        nonInf = input$type4
+        if (nonInf == "sup"){
+          shinyjs::hide(id = "marginA")
+        }
+        else if (nonInf == "ninf"){
+          shinyjs::show(id = "marginA")
+        }
+        else{
+          shinyjs::hide(id = "marginA")
+        }
+      }
+    }
+    }
+  }, ignoreInit = F)
+  
   # GET USER DATA for binary calc
   output$selectB <- renderUI({
     # Applicable for All
@@ -159,40 +185,63 @@ my_server <- function(input, output, session) {
           a <- input$alpha
           ctrl <- input$rrControl
           trt <- input$rrTreatment
-          tryCatch({
-            if (calctype == calcs[1]){
-              p <- input$beta
-              ncase <- prop_n(NA, p, a, ctrl, trt)
-              if (ctrl > 0 & trt > 0 & ctrl < 100 & trt < 100){
-                return(HTML(paste0(
-                  "<div class = preamble>
+          if (!is.null(input$type4)){
+            nonInf = input$type4
+            if (nonInf == "sup"){
+              tryCatch({
+                if (calctype == calcs[1]){
+                  p <- input$beta
+                  ncase <- prop_n(NA, p, a, ctrl, trt)
+                  if (ctrl > 0 & trt > 0 & ctrl < 100 & trt < 100){
+                    return(HTML(paste0(
+                      "<div class = preamble>
                       <p>A total sample of <b>", 2*ceiling(ncase), "</b>, with an experimental group of at least <b>",ceiling(ncase),"</b> and a control group of at least
                       <b>", ceiling(ncase), "</b> is required to sufficiently detect the change between a <b>",trt,"%</b> 
                       event occurrence rate in the experimental group and a <b>",ctrl,"%</b> event occurrence rate in the 
                       control group, assuming <b>",p*100,"%</b> power and a two-sided significance level of <b>",a,"</b>.</p>
                                     <p>This estimate for sample size is obtained using the two-sample test for proportions.</p>
                   </div>")))
-              }
-              else return(inputinvalid)
-            }
-            else if (calctype == calcs[2]){
-              myn <- input$myNo
-              pval <- prop_p(myn, NA, a, ctrl, trt)
-              if (pval > 0 & myn > 0 & ctrl != trt){
-                return(HTML(paste0("<div class = preamble>
+                  }
+                  else return(inputinvalid)
+                }
+                else if (calctype == calcs[2]){
+                  myn <- input$myNo
+                  pval <- prop_p(myn, NA, a, ctrl, trt)
+                  if (pval > 0 & myn > 0 & ctrl != trt){
+                    return(HTML(paste0("<div class = preamble>
                                     <p>A power value of <b>",round(pval, 5),"</b> is obtained for a randomized control trial with equally-sized experimental and 
                                     control groups of <b>", myn, "</b> to sufficiently the change between a <b>",trt,"%</b> event occurrence rate in the experimental group 
                                     and a <b>",ctrl,"%</b> event occurrence rate in the control group, assuming a 
                                     two-sided significance level of <b>",a,"</b>.</p>
                                     <p>This estimate for power is obtained using the two-sample test for proportions.</p>
                                    </div>")))
-              }
-              else return(inputinvalid)
+                  }
+                  else return(inputinvalid)
+                }
+              },
+              warning = function(cond){return(inputinvalid)},
+              error = function(cond){return(inputinvalid)}
+              )
             }
-          },
-          warning = function(cond){return(inputinvalid)},
-          error = function(cond){return(inputinvalid)}
-          )
+            else if (nonInf == "ninf"){
+              myd <- input$delta
+              tryCatch({
+                if (calctype == calcs[1]){
+                  p <- input$beta
+                  nsize <- epi.ssninfb(treat = trt/100, control = ctrl/100, delta = myd, n = NA, alpha = a, power = p)
+                  nsize <- c(nsize$n.treat, nsize$n.control)
+                  return(paste0(nsize[1]," ",nsize[2]))
+                }
+                else if (calctype == calcs[2]){
+                  myn <- input$myNo
+                  power <- epi.ssninfb(treat = trt/100, control = ctrl/100, delta = myd, n = myn, alpha = a, power = NA)$power
+                  return(power)
+                }
+              },
+              warning = function(cond){return(inputinvalid)},
+              error = function(cond){return(inputinvalid)})
+            }
+          }
         }
       }
     }
@@ -204,19 +253,21 @@ my_server <- function(input, output, session) {
       m <- abs(mC - mE) 
       sd <- input$sdChange
       a <- input$alpha
-      # eVal <- input$eVal
-      # cVal <- input$cVal
       eVal <- 1
       cVal <- 1
-      tryCatch(
-        {
-          if (calctype == calcs[1]){
-            b <- input$beta
-            if (m != 0 & eVal > 0 & cVal > 0 & sd != 0){
-              if (eVal == cVal){
-                ncase <- pair_n(NA, b, a, m, sd)
-                return(HTML(paste0(
-                  "<div class = preamble>
+      
+      if (!is.null(input$type4)){
+        nonInf = input$type4
+        if (nonInf == "sup"){
+          tryCatch(
+            {
+              if (calctype == calcs[1]){
+                b <- input$beta
+                if (m != 0 & eVal > 0 & cVal > 0 & sd != 0){
+                  if (eVal == cVal){
+                    ncase <- pair_n(NA, b, a, m, sd)
+                    return(HTML(paste0(
+                      "<div class = preamble>
                                     <p>A total sample of <b>", 2*ceiling(ncase), "</b>, with an experimental group of at least <b>",ceiling(ncase),"</b> 
                                     and a control group of at least <b>", ceiling(ncase), "</b>
                                     is required to sufficiently detect a change of <b>",m,"</b> in the means of experimental
@@ -225,12 +276,12 @@ my_server <- function(input, output, session) {
                                     
                                     <p>This estimate for sample size is obtained using the two-sample t-test.</p>
                         </div>")))
-              }
-              else {
-                k <- round(eVal/cVal, 1)
-                ncase <- pair_n(c(eVal, cVal), b, a, m, sd)
-                return(HTML(paste0(
-                  "<div class = preamble>
+                  }
+                  else {
+                    k <- round(eVal/cVal, 1)
+                    ncase <- pair_n(c(eVal, cVal), b, a, m, sd)
+                    return(HTML(paste0(
+                      "<div class = preamble>
                             <p>A total sample of <b>", ceiling(ncase[1]) + ceiling(ncase[2]),"</b>, with an experimental group of at least <b>",ceiling(ncase[1]),"</b> 
                             and a control group of at least <b>", ceiling(ncase[2]), "</b>
                             is required to sufficiently detect a change of <b>",m,"</b> in the means of experimental
@@ -239,18 +290,18 @@ my_server <- function(input, output, session) {
                             
                             <p>This estimate for sample size from unequal samples is obtained using the method described in Cohen, 1988.</p>
                         </div>")))
+                  }
+                }
+                else return (inputinvalid)
               }
-            }
-            else return (inputinvalid)
-          }
-          else if (calctype == calcs[2]){
-            myn <- input$myNo
-            eVal <- input$eVal
-            cVal <- input$cVal
-            if (m > 0 & eVal > 0 & cVal > 0){
-              if (eVal == cVal){
-                pval <- pair_p(eVal, NA, a, m, sd)
-                return(HTML(paste0("<div class = preamble>
+              else if (calctype == calcs[2]){
+                myn <- input$myNo
+                eVal <- input$eVal
+                cVal <- input$cVal
+                if (m > 0 & eVal > 0 & cVal > 0){
+                  if (eVal == cVal){
+                    pval <- pair_p(eVal, NA, a, m, sd)
+                    return(HTML(paste0("<div class = preamble>
                                     <p>A power value of <b>",round(pval, 5),"</b> is obtained for an experiment with equally-sized experimental and 
                                     control groups of <b>", myn, "</b>, with a standard deviation of <b>",sd,"</b> to sufficiently detect a 
                                     change of <b>", m, "</b> with a two-sided significance level of <b>",a,"</b>.
@@ -258,11 +309,11 @@ my_server <- function(input, output, session) {
                                     
                                     <p>This estimate for power is obtained using the two-sample t-test.</p>
                                     </div>")))
-              }
-              else{
-                pval <- pair_p(c(eVal, cVal), NA, a, m, sd)
-                return(HTML(paste0(
-                  "<div class = preamble>
+                  }
+                  else{
+                    pval <- pair_p(c(eVal, cVal), NA, a, m, sd)
+                    return(HTML(paste0(
+                      "<div class = preamble>
                           <p>A power value of <b>",round(pval, 5),"</b> is obtained for an experiment with equally-sized experimental and 
                           control groups of <b>", myn, "</b>, with a standard deviation of <b>",sd,"</b> to sufficiently detect a 
                           change of <b>", m, "</b> with a two-sided significance level of <b>",a,"</b>.
@@ -270,14 +321,31 @@ my_server <- function(input, output, session) {
                           
                           <p>This estimate for power from unequal samples is obtained using the method described in Cohen, 1988.</p>
                         </div>")))
+                  }
+                }
+                else return(inputinvalid)
               }
-            }
-            else return(inputinvalid)
+            },
+            warning = function(cond){return(inputinvalid)},
+            error = function(cond){return(inputinvalid)}
+          )
+        }
+        else if (nonInf == "ninf"){
+          delta <- input$delta
+          if (calctype == calcs[1]){
+            b <- input$beta
           }
-        },
-        warning = function(cond){return(inputinvalid)},
-        error = function(cond){return(inputinvalid)}
-      )
+          else if (calctype == calcs[2]){
+            myn <- input$myNo
+            eVal <- input$eVal
+            cVal <- input$cVal
+            
+            #power <- epi.ssninfb(treat = eVal, control = cVal, n = myn, alpha = a, delta = delta, power = NA)$power
+            return(power)
+          }
+          return(inputnotyet)
+        }
+      }
     }
     # TIME-TO-EVENT DATA
     else if (datacat == datas[3]){

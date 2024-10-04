@@ -7,6 +7,7 @@ library(shinyjs)
 library(bslib)
 library(epiR)
 library(pwr)
+library(shinyhelper)
 #library(powerSurvEpi)
 
 # define required functions for power and ss calcs
@@ -22,6 +23,10 @@ prop_n <- function(myn, b, a, prop1, prop2){
     return(power.prop.test(n = NULL, p1 = prop1/100, p2 = prop2/100, power = b, sig.level = a)$n)
   }
 }
+
+# FOR RCT NINF
+c_ninf_p <- function()
+
 
 # (FOR PAIRED DATA)
 pair_p <- function(myn, b, a, mean, sd) {
@@ -121,5 +126,15 @@ ttebig <- HTML("<div class = 'btext'>
 binarys <- c("Randomized Trial")
 bexps <- c(HTML("<p> Randomized Trial<sup>1</sup></p>"))
 
+supbig <- HTML("<div class = 'btext'>
+                      <p class = 'btitle'>Superiority Trial</p>
+                  </div>")
+infbig <- HTML("<div class = 'btext'>
+                      <p class = 'btitle'>Non-Inferiority Trial</p>
+                  </div>")
+supinf <- c("sup", "ninf")
+
 #output option
 inputinvalid <- HTML("<div class = text-center><p class = danger>One or more inputs is invalid (see above)</p></div>")
+
+inputnotyet <- HTML("<div class = text-center><p class = danger>Coming soon!</p></div>")

@@ -5,8 +5,9 @@ my_ui <- page(
      # initialize shinyjs
      useShinyjs(),
      tags$head(
-          tags$link(rel = "icon", type = "image/png", href = "powercalclogo.drawio.png"),
+          tags$link(rel = "icon", type = "image/png", href = "favicon-32x32.png"),
           tags$link(rel = "stylesheet", type = "text/css", href = "style2.css"),
+          tags$meta(name="description", content="This web app can quickly compute sample sizes and power values for data that is often enountered in epidemiological research scenarios without using R."),
           tags$title("powercalc.ca")
      ),
      div(id = "page",
@@ -19,7 +20,10 @@ my_ui <- page(
            div(id = 'Bsub',
               radioGroupButtons("type3", "For study type:", choiceValues = binarys, choiceNames = bexps, status = "black", individual = TRUE),
            ),
-           p(class = "footnote", "1. For individual-level Randomized Control Trials (RCTs), not clustered RCTs.")
+           div(id = "BCsub",
+              radioGroupButtons("type4", "For trial type:", choiceValues = supinf, choiceNames = c(supbig, infbig), status = "black", individual = TRUE),
+           ),
+           p(class = "footnote", "For individual-level Randomized Control Trials (RCTs), not clustered RCTs.")
       ),
       # DATA ENTRY
       card(id = "data", 
@@ -27,8 +31,12 @@ my_ui <- page(
           div(id = "B-op", uiOutput("selectB")),
           div(id = "C-op", uiOutput("selectC")), 
           div(id = "T-op", uiOutput("selectT")),
+          div(id = "marginA",            
+              HTML("<p class = 'desc'><b>Non-inferiority margin</b> or &Delta;-value (delta):</p>"),
+              sliderInput("delta", NULL, min = 0.01, max = 0.2, value = 0.1)
+          ),
           div(id = "sig",            
-              HTML("<p class = 'desc'><b>Significance level</b> or &alpha;-value</b> (alpha):</p>"),
+              HTML("<p class = 'desc'><b>Significance level</b> or &alpha;-value (alpha):</p>"),
               sliderInput("alpha", NULL, min = 0.01, max = 0.1, value = 0.05),
               p(class = "small text-center", "Common/Recommended Value is 0.05")
           ),

@@ -1,0 +1,12 @@
+name: testing-ni
+title: testing-ni
+username: emilhs
+account: emilhs
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 12905304
+bundleId: 9180377
+url: https://emilhs.shinyapps.io/testing-ni/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
