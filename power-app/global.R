@@ -1,13 +1,13 @@
 library(shiny)
-#library(shinytitle)
-#library(rsconnect)
-
 library(shinyWidgets)
 library(shinyjs)
 library(bslib)
 library(epiR)
 library(pwr)
 library(shinyhelper)
+
+#library(shinytitle)
+#library(rsconnect)
 #library(powerSurvEpi)
 
 # define required functions for power and ss calcs

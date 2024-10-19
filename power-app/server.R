@@ -33,12 +33,14 @@ my_server <- function(input, output, session) {
         shinyjs::show(id = "B-op")
         shinyjs::show(id = "BCsub")
         shinyjs::show(id = "Bsub")
+        shinyjs::hide(id = "TTEsub")
         shinyjs::hide(id = "C-op")
         shinyjs::hide(id = "T-op")
       }
       else if (datacat == datas[2]){
         shinyjs::hide(id = "B-op")
         shinyjs::show(id = "BCsub")
+        shinyjs::hide(id = "TTEsub")
         shinyjs::hide(id = "Bsub")
         shinyjs::show(id = "C-op")
         shinyjs::hide(id = "T-op")
@@ -46,6 +48,7 @@ my_server <- function(input, output, session) {
       else if (datacat == datas[3]){
         shinyjs::hide(id = "B-op")
         shinyjs::hide(id = "BCsub")
+        shinyjs::show(id = "TTEsub")
         shinyjs::hide(id = "Bsub")
         shinyjs::hide(id = "C-op")
         shinyjs::show(id = "T-op")
@@ -70,12 +73,21 @@ my_server <- function(input, output, session) {
         nonInf = input$type4
         if (nonInf == "sup"){
           shinyjs::hide(id = "marginA")
+          shinyjs::hide(id = "des")
+          shinyjs::show(selector = ".forsup")
+          shinyjs::hide(selector = ".forninf")
         }
         else if (nonInf == "ninf"){
           shinyjs::show(id = "marginA")
+          shinyjs::show(id = "des")
+          shinyjs::hide(selector = ".forsup")
+          shinyjs::show(selector = ".forninf")
         }
         else{
           shinyjs::hide(id = "marginA")
+          shinyjs::hide(id = "des")
+          shinyjs::hide(selector = ".forsup")
+          shinyjs::hide(selector = ".forninf")
         }
       }
     }
@@ -88,7 +100,7 @@ my_server <- function(input, output, session) {
     selectors <- div(class = "newclass",
                   div(class = 'desc',
                     HTML("<p class = 'indesc'><b>Anticipated %</b> of the <b>experimental <u>and</u> control</b> groups who will experience the outcome<sup>1</sup>:</p>"),
-                    htmlOutput("restrictB")
+                    htmlOutput("restrictB"),
                   ),
                   div(class = "row",
                     div(class = "col-6",
@@ -97,6 +109,12 @@ my_server <- function(input, output, session) {
                     div(class = "col-6",
                       numericInputIcon(inputId = "rrControl", NULL, value = 20, icon = list(NULL,'%'), step = 0.1),
                       p(class = "small text-center", "% in Control Group"))
+                  ),
+                  shinyjs::hidden(
+                      div(id = "des", 
+                        HTML("<p class = 'desc'>The <b>outcome</b> is:</p>"),
+                        radioGroupButtons("type4D", choices = c("Desirable", "Undesirable"), status = "black", individual = TRUE)
+                      )
                   ),
                   shinyjs::hidden(div(class = "forp",
                     div(class = 'desc',
@@ -206,8 +224,8 @@ my_server <- function(input, output, session) {
                       <b>", ceiling(ncase), "</b> is required to sufficiently detect the change between a <b>",trt,"%</b> 
                       event occurrence rate in the experimental group and a <b>",ctrl,"%</b> event occurrence rate in the 
                       control group, assuming <b>",p*100,"%</b> power and a two-sided significance level of <b>",a,"</b>.</p>
-                                    <p>This estimate for sample size is obtained using the two-sample test for proportions.</p>
-                  </div>")))
+                      <p>This estimate for power is obtained using the two-sample test for proportions<sup>1</sup>.</p>
+                      <p>1. Rosner, Bernard (Bernard A.). Fundamentals of Biostatistics. 6th ed., Thomson-Brooks/Cole, 2006.</p>                  </div>")))
                   }
                   else return(inputinvalid)
                 }
@@ -220,7 +238,8 @@ my_server <- function(input, output, session) {
                                     control groups of <b>", myn, "</b> to sufficiently the change between a <b>",trt,"%</b> event occurrence rate in the experimental group 
                                     and a <b>",ctrl,"%</b> event occurrence rate in the control group, assuming a 
                                     two-sided significance level of <b>",a,"</b>.</p>
-                                    <p>This estimate for power is obtained using the two-sample test for proportions.</p>
+                                    <p>This estimate for power is obtained using the two-sample test for proportions<sup>1</sup>.</p>
+                                    <p>1. Rosner, Bernard (Bernard A.). Fundamentals of Biostatistics. 6th ed., Thomson-Brooks/Cole, 2006.</p>
                                    </div>")))
                   }
                   else return(inputinvalid)
@@ -231,45 +250,64 @@ my_server <- function(input, output, session) {
               )
             }
             else if (nonInf == "ninf"){
-              myd <- input$delta
-              tryCatch({
-                if (calctype == calcs[1]){
-                  p <- input$beta
-                  nsize <- epi.ssninfb(treat = trt/100, control = ctrl/100, delta = myd/100, n = NA, alpha = a, power = p)
-                  nsize <- c(nsize$n.treat, nsize$n.control)
-                  
-                  return(HTML(paste0(
-                    "<div class = preamble>
-                      <p>A total sample of <b>", 2*ceiling(nsize[1]), "</b>, with an experimental group of at least <b>",ceiling(nsize[1]),"</b> 
-                                    and a control group of at least <b>", ceiling(nsize[1]), "</b>
-                                    is required to sufficiently detect that a <b>",trt,"%</b> rate of occurrence of the outcome in the experimental group is
-                                    <i>not inferior</i> to a <b>",ctrl,"%</b> rate of occurrence of the outcome in the control group, 
-                                    assuming a non-inferioirty margin of <b>",myd,"</b>, a <b>",p*100,"%</b>
-                                    power and a two-sided significance level of <b>",a,"</b>.</p>
-                                    
-                                    <p>This estimate for sample size is obtained using the method described in Blackwelder, 1982.</p>
-                                    
-                                    <p>1. Blackwelder WC (1982). Proving the null hypothesis in clinical trials. Controlled Clinical Trials 3: 345 - 353.</p>
-                  </div>")))
-                }
-                else if (calctype == calcs[2]){
-                  myn <- input$myNo
-                  power <- epi.ssninfb(treat = trt/100, control = ctrl/100, delta = myd/100, n = myn, alpha = a, power = NA)$power
-                  return(HTML(paste0(
-                    "<div class = preamble>
-                      <p>A power value of <b>", round(power,5), "</b> is obtained for a randomized control trial with equally-sized experimental and 
-                                    control groups of <b>", myn, "</b> to sufficiently detect that a <b>",trt,"%</b> rate of occurrence of the outcome in the experimental group is
-                                    <i>not inferior</i> to a <b>",ctrl,"%</b> rate of occurrence of the outcome in the control group, 
-                                    assuming a non-inferioirty margin of <b>",myd,"</b> and a two-sided significance level of <b>",a,"</b>.</p>
-                                    
-                                    <p>This estimate for sample size is obtained using the method described in Blackwelder, 1982.</p>
-                                    
-                                    <p>1. Blackwelder WC (1982). Proving the null hypothesis in clinical trials. Controlled Clinical Trials 3: 345 - 353.</p>
-                  </div>")))                
+              if (!is.null(input$type4D)){
+                des = input$type4D
+                myd <- input$delta
+                tryCatch({
+                  if (calctype == calcs[1]){
+                    p <- input$beta
+                    
+                    if (des == "Undesirable"){
+                      nsize <- epi.ssninfb(treat = (100 - trt)/100, control = (100 - ctrl)/100, delta = myd/100, n = NA, alpha = a, power = p)
+                      nsize <- c(nsize$n.treat, nsize$n.control)
+                    }
+                    else if (des == "Desirable"){
+                      nsize <- epi.ssninfb(treat = trt/100, control = ctrl/100, delta = myd/100, n = NA, alpha = a, power = p)
+                      nsize <- c(nsize$n.treat, nsize$n.control)
+                    }
+                    
+                    return(HTML(paste0(
+                      "<div class = preamble>
+                        <p>A total sample of <b>", 2*ceiling(nsize[1]), "</b>, with an experimental group of at least <b>",ceiling(nsize[1]),"</b> 
+                                      and a control group of at least <b>", ceiling(nsize[1]), "</b>
+                                      is required to sufficiently detect that a <b>",trt,"%</b> rate of occurrence of a <i>",tolower(des),"</i> outcome in the experimental group is
+                                      <i>not inferior</i> to a <b>",ctrl,"%</b> rate of occurrence of the same outcome in the control group, 
+                                      assuming a non-inferiority margin of <b>",myd,"%</b> (for absolute risk), <b>",p*100,"%</b>
+                                      power and a one-sided significance level of <b>",a,"</b>.</p>
+                                      
+                                      <p>This estimate for sample size is obtained using the method described in Blackwelder, 1982.</p>
+                                      
+                                      <p>1. Blackwelder, W C. ''''Proving the null hypothesis in clinical trials.'' 
+                                      Controlled clinical trials vol. 3,4 (1982): 345-53. doi:10.1016/0197-2456(82)90024-1</p>
+                      </div>")))
                   }
+                  else if (calctype == calcs[2]){
+                    myn <- input$myNo
+                    
+                    if (des == "Undesirable"){
+                      power <- epi.ssninfb(treat = (100-trt)/100, control = (100-ctrl)/100, delta = myd/100, n = myn, alpha = a, power = NA)$power
+                    }
+                    else if (des == "Desirable"){
+                      power <- epi.ssninfb(treat = trt/100, control = ctrl/100, delta = myd/100, n = myn, alpha = a, power = NA)$power
+                    }
+                    
+                    return(HTML(paste0(
+                      "<div class = preamble>
+                        <p>A power value of <b>", round(power,5), "</b> is obtained for a randomized control trial with equally-sized experimental and 
+                                      control groups of <b>", myn, "</b> to sufficiently detect that a <b>",trt,"%</b> rate of occurrence of a <i>",tolower(des),"</i> outcome in the experimental group is
+                                      <i>not inferior</i> to a <b>",ctrl,"%</b> rate of occurrence of the same outcome in the control group, 
+                                      assuming a non-inferiority margin of <b>",myd,"%</b> (for absolute risk) and a one-sided significance level of <b>",a,"</b>.</p>
+                                      
+                                      <p>This estimate for sample size is obtained using the method described in Blackwelder, 1982.</p>
+                                      
+                                      <p>1. Blackwelder, W C. ''''Proving the null hypothesis in clinical trials.'' 
+                                      Controlled clinical trials vol. 3,4 (1982): 345-53. doi:10.1016/0197-2456(82)90024-1</p>
+                      </div>")))                
+                    }
               },
-              warning = function(cond){return(inputinvalid)},
-              error = function(cond){return(inputinvalid)})
+                warning = function(cond){return(inputinvalid)},
+                error = function(cond){return(inputinvalid)})
+              }
             }
           }
       #  }
@@ -301,10 +339,11 @@ my_server <- function(input, output, session) {
                                     <p>A total sample of <b>", 2*ceiling(ncase), "</b>, with an experimental group of at least <b>",ceiling(ncase),"</b> 
                                     and a control group of at least <b>", ceiling(ncase), "</b>
                                     is required to sufficiently detect a change of <b>",m,"</b> in the means of experimental
-                                    and control groups that share a standard deviation of <b>",sd,"</b>, assuming <b>",b*100,"%</b>
+                                    and control groups, for a population with a standard deviation of <b>",sd,"</b>, assuming <b>",b*100,"%</b>
                                     power and a two-sided significance level of <b>",a,"</b>.</p>
                                     
-                                    <p>This estimate for sample size is obtained using the two-sample t-test.</p>
+                                    <p>This estimate for sample size is obtained using the two-sample t-test<sup>1</sup>.</p>
+                      <p>1. Rosner, Bernard (Bernard A.). Fundamentals of Biostatistics. 6th ed., Thomson-Brooks/Cole, 2006.</p>
                         </div>")))
                   }
                   else return (inputinvalid)
@@ -320,11 +359,12 @@ my_server <- function(input, output, session) {
                     pval <- pair_p(eVal, NA, a, m, sd)
                     return(HTML(paste0("<div class = preamble>
                                     <p>A power value of <b>",round(pval, 5),"</b> is obtained for an experiment with equally-sized experimental and 
-                                    control groups of <b>", myn, "</b>, with a standard deviation of <b>",sd,"</b> to sufficiently detect a 
+                                    control groups of <b>", myn, "</b>, for a population with a standard deviation of <b>",sd,"</b>, to sufficiently detect a 
                                     change of <b>", m, "</b> with a two-sided significance level of <b>",a,"</b>.
                                     </p>
                                     
-                                    <p>This estimate for power is obtained using the two-sample t-test.</p>
+                                    <p>This estimate for power is obtained using the two-sample t-test<sup>1</sup>.</p>
+                      <p>1. Rosner, Bernard (Bernard A.). Fundamentals of Biostatistics. 6th ed., Thomson-Brooks/Cole, 2006.</p>
                                     </div>")))
                   }
                   else return(inputinvalid)
@@ -338,53 +378,56 @@ my_server <- function(input, output, session) {
         }
         else if (nonInf == "ninf"){
           delta <- input$delta
-          tryCatch({
-            if (calctype == calcs[1]){
-              b <- input$beta
-              if (m != 0 & sd != 0){
-                nsize <- epi.ssninfc(treat = mE, control = mC, sigma = sd, n = NA, alpha = a, delta = delta/100, power = b)
-                nsize <- c(nsize$n.treat, nsize$n.control)
-                return(HTML(paste0(
-                  "<div class = preamble>
+            tryCatch({
+              if (calctype == calcs[1]){
+                b <- input$beta
+                if (m != 0 & sd != 0){
+                  nsize <- epi.ssninfc(treat = mE, control = mC, sigma = sd, n = NA, alpha = a, delta = delta/100, power = b)
+                  nsize <- c(nsize$n.treat, nsize$n.control)
+                  return(HTML(paste0(
+                    "<div class = preamble>
                       <p>A total sample of <b>", 2*ceiling(nsize[1]), "</b>, with an experimental group of at least <b>",ceiling(nsize[1]),"</b> 
                                     and a control group of at least <b>", ceiling(nsize[1]), "</b>
                                     is required to sufficiently detect that a mean value of <b>",mE,"</b> in the experimental group is
-                                    <i>not inferior</i> to a mean value of <b>",mC,"</b>in the control group, for a population with
-                                    a standard deviation of <b>",sd,"</b>, assuming a non-inferioirty margin of <b>",delta,"</b>, <b>",b*100,"%</b>
-                                    power and a two-sided significance level of <b>",a,"</b>.</p>
+                                    <i>not inferior</i> to a mean value of <b>",mC,"</b> in the control group, for a population with
+                                    a standard deviation of <b>",sd,"</b>, assuming a non-inferiority margin of <b>",delta,"%</b> (for absolute risk), <b>",b*100,"%</b>
+                                    power and a one-sided significance level of <b>",a,"</b>.</p>
                                     
                                     <p>This estimate for sample size is obtained using the method described in Blackwelder, 1982.</p>
                                     
-                                    <p>1. Blackwelder WC (1982). Proving the null hypothesis in clinical trials. Controlled Clinical Trials 3: 345 - 353.</p>
+                                    <p>1. Blackwelder, W C. ''''Proving the null hypothesis in clinical trials.'' 
+                                    Controlled clinical trials vol. 3,4 (1982): 345-53. doi:10.1016/0197-2456(82)90024-1</p>
+                                    PMID: 7160191.</p>
                   </div>")))
+                }
+                else return (inputinvalid)
               }
-              else return (inputinvalid)
-            }
-            else if (calctype == calcs[2]){
-              myn <- input$myNo
-              eVal <- input$eVal
-              cVal <- input$cVal
-              if (m != 0 & eVal > 0 & cVal > 0 & sd != 0 & eVal == cVal){
-                power <- epi.ssninfc(treat = mE, control = mC, sigma = sd, n = myn, alpha = a, delta = delta/100, power = NA)$power
-                
-                return(HTML(paste0("<div class = preamble>
+              else if (calctype == calcs[2]){
+                myn <- input$myNo
+                eVal <- input$eVal
+                cVal <- input$cVal
+                if (m != 0 & eVal > 0 & cVal > 0 & sd != 0 & eVal == cVal){
+                  power <- epi.ssninfc(treat = mE, control = mC, sigma = sd, n = myn, alpha = a, delta = delta/100, power = NA)$power
+                  
+                  return(HTML(paste0("<div class = preamble>
                                     <p>A power value of <b>",round(power, 5),"</b> is obtained for an experiment with equally-sized experimental and 
                                     control groups of <b>", myn, "</b> to sufficiently detect that a mean value of <b>",mE,"</b> in the experimental group is
-                                    <i>not inferior</i> to a mean value of <b>",mC,"</b>in the control group, for a population with
-                                    a standard deviation of <b>",sd,"</b>, assuming a non-inferioirty margin of <b>",delta,"</b> and a 
-                                    two-sided significance level of <b>",a,"</b>.</p>
+                                    <i>not inferior</i> to a mean value of <b>",mC,"</b> in the control group, for a population with
+                                    a standard deviation of <b>",sd,"</b>, assuming a non-inferiority margin of <b>",delta,"%</b> (for absolute risk) and a 
+                                    one-sided significance level of <b>",a,"</b>.</p>
                                     
                                     <p>This estimate for sample size is obtained using the method described in Blackwelder, 1982.</p>
                                     
-                                    <p>1. Blackwelder WC (1982). Proving the null hypothesis in clinical trials. Controlled Clinical Trials 3: 345 - 353.</p>
+                                    <p>1. Blackwelder, W C. ''''Proving the null hypothesis in clinical trials.'' 
+                                    Controlled clinical trials vol. 3,4 (1982): 345-53. doi:10.1016/0197-2456(82)90024-1</p>
                                     </div>")))
                 }
-              else return (inputinvalid)
-            }
-            return(inputnotyet)
-          },
-          warning = function(cond){return(inputinvalid)},
-          error = function(cond){return(inputinvalid)})
+                else return (inputinvalid)
+              }
+              return(inputnotyet)
+            },
+            warning = function(cond){return(inputinvalid)},
+            error = function(cond){return(inputinvalid)})
         }
       }
     }
@@ -421,7 +464,10 @@ my_server <- function(input, output, session) {
                                         and a <b>",pc,"%</b> event occurrence rate in the control group. 
                                   </p>
                                         <p>This estimate for sample size is obtained using the method for sample size calculation
-                                        described in Schoenfeld, 1983.</p>
+                                        described in Schoenfeld, 1983<sup>1</sup>.</p>
+                                        
+                                  <p>1.Schoenfeld, David A. “Sample-Size Formula for the Proportional-Hazards Regression Model.” 
+                                  Biometrics, vol. 39, no. 2, 1983, pp. 499–503. JSTOR, https://doi.org/10.2307/2531021.</p>
                                   </div>")))
                 }
                 else return (inputinvalid)
@@ -464,11 +510,13 @@ my_server <- function(input, output, session) {
         return(HTML("<p class = 'danger'>Warning: Values must be greater than 0 and less than 100!</p>"))
       }
       else {
-        if (rr == tt){
-          return(HTML("<p class = 'danger'>Warning: Values cannot be equal!</p>"))
-        }
-        else {
-          return(HTML("<span></span>"))
+        if (!is.null(input$type4)){
+          nonInf = input$type4
+          if (nonInf == "sup"){
+            if (rr == tt){return(HTML("<p class = 'danger'>Warning: Values cannot be equal!</p>"))}
+            else return(HTML("<span></span>"))
+          }
+          else return(HTML("<span></span>"))
         }
       }
     }
@@ -511,12 +559,14 @@ my_server <- function(input, output, session) {
     m <- input$mE
     m1 <- input$mC
     if (!is.null(m) && !is.na(m) && is.numeric(m) && !is.null(m1) && !is.na(m1) && is.numeric(m1)){
-      if (m1 == m){
-        return(HTML("<p class = 'danger'>Warning: Values cannot be equal!</p>"))
-      }
-      else{
-        return(HTML("<span></span>"))
-      }
+        if (!is.null(input$type4)){
+          nonInf = input$type4
+          if (nonInf == "sup"){
+            if (m == m1){return(HTML("<p class = 'danger'>Warning: Values cannot be equal!</p>"))}
+            else return(HTML("<span></span>"))
+          }
+          else return(HTML("<span></span>"))
+        }
     }
     else{
       return(HTML("<p class = 'danger'>Warning: Values cannot be left empty!</p>"))

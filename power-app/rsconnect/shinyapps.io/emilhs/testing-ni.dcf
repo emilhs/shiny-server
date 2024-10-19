@@ -5,7 +5,7 @@ account: emilhs
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 12905304
-bundleId: 9184512
+bundleId: 9212152
 url: https://emilhs.shinyapps.io/testing-ni/
 version: 1
 asMultiple: FALSE

@@ -21,7 +21,6 @@ my_ui <- page(
            # div(id = 'Bsub',
            #    radioGroupButtons("type3", "For study type:", choiceValues = binarys, choiceNames = bexps, status = "black", individual = TRUE),
            # ),
-           div(id = "BCsub",
               div(class = "desc", 
                  div(class = "row",
                    div(class = "col-6",
@@ -37,8 +36,12 @@ my_ui <- page(
                    )
                  )
               ),
-              radioGroupButtons("type4", NULL, choiceValues = supinf, choiceNames = c(supbig, infbig), status = "black", individual = TRUE),
-           ),
+              div(id = "BCsub",
+                radioGroupButtons("type4", NULL, choiceValues = supinf, choiceNames = c(supbig, infbig), status = "black", individual = TRUE)
+              ),
+             shinyjs::hidden(div(id = "TTEsub",
+                radioGroupButtons("type4T", NULL, choiceValues = supinf[1], choiceNames = c(supbig), status = "black", individual = TRUE)
+             )),
            p(class = "footnote", "Note: This tool is for individual-level Randomized Control Trials (RCTs), not clustered RCTs.")
       ),
       # DATA ENTRY
@@ -48,16 +51,21 @@ my_ui <- page(
           div(id = "C-op", uiOutput("selectC")), 
           div(id = "T-op", uiOutput("selectT")),
           div(id = "marginA",            
-              HTML("<p class = 'desc'><b>Non-inferiority margin</b>:</p>"),
+              HTML("<p class = 'desc'><b>Non-inferiority margin</b> using absolute risk difference:</p>"),
               sliderInput("delta", NULL, min = 1, max = 20, step = 0.25, value = 10, post = '%')
           ),
-          div(id = "sig",            
-              HTML("<p class = 'desc'><b>Significance level</b> or &alpha;-value (alpha):</p>"),
+          shinyjs::hidden(div(class = "forninf",            
+              HTML("<p class = 'desc'>One-sided <b>significance level</b> or &alpha;-value (alpha):</p>"),
+              sliderInput("alpha", NULL, min = 0.01, max = 0.1, value = 0.05),
+              p(class = "small text-center", "Common/Recommended Value is 0.05")
+          )),
+          div(class = "forsup",            
+              HTML("<p class = 'desc'>Two-sided <b>significance level</b> or &alpha;-value (alpha):</p>"),
               sliderInput("alpha", NULL, min = 0.01, max = 0.1, value = 0.05),
               p(class = "small text-center", "Common/Recommended Value is 0.05")
           ),
           div(class = "forss",
-              HTML("<p class = 'desc'><b>Statistical power</b> or 1-&beta; value</b> (1-''beta''):</p>"),
+              HTML("<p class = 'desc'><b>Statistical power</b> or 1-&beta; value</b> (1-beta):</p>"),
               sliderInput("beta", NULL, min = 0.5, max = 0.99, value = 0.8),
               p(class = "small text-center", "Common/Recommended Value is 0.8") 
           ),
