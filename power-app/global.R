@@ -4,7 +4,7 @@ library(shinyjs)
 library(bslib)
 library(epiR)
 library(pwr)
-library(shinyhelper)
+#library(shinyhelper)
 
 #library(shinytitle)
 #library(rsconnect)
