@@ -11,11 +11,42 @@ div.row{--bs-gutter-x: 0px;}
 }
 .bslib-gap-spacing{gap: 0px}
 
+.answer{
+  margin-bottom: 7px;
+  display: flex;
+  justify-content: center;
+  margin-left: auto; margin-right: auto;
+}
+.img{
+  display: block;
+  margin: 5px;
+  padding: 0px;
+}
+.imgtext{
+  width: 360px;
+  display: block;
+  margin-left: 5px;
+  padding: 0px;
+}
+.imgtext2{
+  width: 380px;
+  display: block;
+  margin-left: 5px;
+  padding: 0px;
+}
+.imgtext a, .imgtext p{
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  font-size: 12px;
+}
+
 /* text styling settings (all) */
 .text-center{text-align: center;}
 .text-right{text-align: right;}
 .danger {color: darkred;}
 .bold {font-weight: bold;}
+.half-bold{font-size: 14px; padding-top: 8px; font-weight: 500}
 .bottomtext h5{font-size: 12px; margin-left: 20%; margin-right: 20%;}
 a, a:link, a:active, a:visited, a:hover {
   color:inherit;
@@ -30,7 +61,17 @@ a, a:link, a:active, a:visited, a:hover {
 .desc, .tabletitle{padding-top: 10px; padding-bottom: 10px;}
 .control-label{padding-top: 5px;}
 .footnote{padding-top: 10px; font-size: 9px;}
-.footer{text-align: center; font-size: 10px; margin-bottom: 5px; margin-top: 20px; margin-left:auto; margin-right:auto;}
+.footer{text-align: center; font-size: 10px; margin-bottom: 5px; margin-top: 25px; margin-left:auto; margin-right:auto;}
+.footer-noline{
+  display: block; 
+  text-decoration: none; 
+  text-align: center; 
+  font-size: 10px; 
+  margin-top: 20px;
+  margin-bottom: 5px; 
+  margin-left:auto; 
+  margin-right:auto;
+}
 .footerlink{display: block; text-align: center; font-size: 10px; margin-bottom: 15px; margin-left:auto; margin-right:auto;}
 .formula{font-size: 12px; text-align:center; font-family:'Courier New', monospace; letter-spacing: -0.05em;}
 .small{padding-left: 5px; padding-right: 5px; margin-left: 12px; margin-right:12px;}

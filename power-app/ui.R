@@ -7,7 +7,7 @@ my_ui <- page(
      tags$head(
           tags$link(rel = "icon", type = "image/png", href = "favicon-32x32.png"),
           tags$link(rel = "stylesheet", type = "text/css", href = "style2.css"),
-          tags$meta(name="description", content="This web app can quickly compute sample sizes and power values for data that is often enountered in epidemiological research scenarios without using R."),
+          tags$meta(name="description", content="This web app can quickly compute sample sizes and power values for data that is often encountered in epidemiological research scenarios without using R."),
           tags$title("powercalc.ca")
      ),
      div(id = "page",
@@ -76,8 +76,34 @@ my_ui <- page(
       navset_card_tab(id = "results", nav_panel("Result", div(class = "preamble", uiOutput("computed")))
       ),
       # FOOTER OF PAGE
-      div(class = "bottomtext text-center", h5("This web app can quickly compute sample sizes and power values for data that is often enountered in epidemiological research scenarios without using R.")),
-      p(class = "footer", "Fralick Lab 2024"),
+      div(class = "centered",
+          h4(class = "half-bold text-center", "What is powercalc.ca?"),
+          div(class = "answer text-center",
+              # div(class = "img",
+              #     img(src='apple-touch-icon.png', height = "50px", align = "left")
+              # ),
+              div(class = "imgtext2",
+                  p("This web app can quickly compute sample 
+                  sizes and power values for data that is often 
+                  encountered in epidemiological research.")
+              )
+          )
+      ),
+      div(class = "centered",
+          h4(class = "half-bold text-center", "Not sure where to submit your manuscript?"),
+          div(class = "answer text-left",
+              a(class = "img", href = "https://jrnowl.com", 
+                  img(src='thumbnail_jrnowl.png', height = "50px", align = "left")
+              ),
+              div(class = "imgtext",
+                  HTML("<a href = 'https://jrnowl.com'>Check out <u>www.jrnowl.com</u> which has a repository of
+                  the submission guidelines for over 
+                  260 journals,
+                  including details on acceptance rate and time to first decision!</a>")
+              )
+          )
+      ),
+      a(class = "footer-noline", href = "https://fralicklab.com","Fralick Lab 2024"),
       a(class = "footerlink", href = "https://forms.gle/hYH9qJZm8srXuab68", "Provide Feedback"),
       HTML("<script async src='https://www.googletagmanager.com/gtag/js?id=G-EK8VZNR4QT'></script>
              <script>
