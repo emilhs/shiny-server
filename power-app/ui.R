@@ -7,6 +7,7 @@ my_ui <- page(
      tags$head(
           tags$link(rel = "icon", type = "image/png", href = "favicon-32x32.png"),
           tags$link(rel = "stylesheet", type = "text/css", href = "style2.css"),
+          tags$meta(name="google-site-verification", content="dns9ck7zUMe2wquxtvrQqXQe6FvMCpZvFh3ESDM6bx0"),
           tags$meta(name="description", content="This web app can quickly compute sample sizes and power values for data that is often encountered in epidemiological research scenarios without using R."),
           tags$meta(name="keywords", content="power calculator, power, sample size, statistics, research, proposal, grant, application, non-inferiority, epidemiology, sample size calculator, calculator, significance level"),
           tags$title("powercalc.ca")
